@@ -79,6 +79,35 @@ async function run() {
             res.json(result)
         })
 
+        // delete order api
+        app.delete('/orders/:deleteId',async(req, res) => {
+            const deleteId = req.params.deleteId;
+            
+            const query = { _id: ObjectId(deleteId) };
+
+            const result = await orderCollection.deleteOne(query);
+
+            res.json(result);
+        })
+
+        // update orderStatus
+        app.put('/orders/:updateId', async (req, res) => {
+            const updateId = req.params.updateId;
+            // console.log(updateId)
+            const filter = { _id: ObjectId(updateId) };
+            
+            const options = { upsert: true };
+
+            const updateDoc = {
+                $set: {
+                    orderStatus: "confirmed",
+                },
+            };
+            const result = await orderCollection.updateOne(filter, updateDoc, options)
+            console.log('updating', updateId)
+            res.json(result);
+        })
+
 
     }finally{}
 }
