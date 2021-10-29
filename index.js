@@ -34,7 +34,7 @@ async function run() {
         // Get by _id
         app.get('/destinations/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+            console.log("place order for" ,id);
             const query = { _id: ObjectId(id) };
 
             const currentDestination = await destCollection.findOne(query);
@@ -44,16 +44,16 @@ async function run() {
         // post new order
         app.post('/orders', async (req, res) => {
             const order = req.body;
-            console.log("hit post", order);
+            console.log("posting order", order);
             
             const result = await orderCollection.insertOne(order);
-            console.log(result);
             res.json(result)
         })
 
         // get all orders - admin
         app.get('/orders', async (req, res) => {
             const cursor = orderCollection.find({});
+            console.log("Getting all orders for admin");
             const orders = await cursor.toArray();
             res.send(orders);
         })
@@ -61,7 +61,7 @@ async function run() {
         // get single users order
         app.get('/orders/:uid', async (req, res) => {
             const uid = req.params.uid;
-            console.log(uid);
+            console.log("orders placed by" , uid);
 
             const query = { uid: uid };
     
@@ -72,10 +72,9 @@ async function run() {
         // add/post new destination
         app.post('/destinations', async (req, res) => {
             const destination = req.body;
-            console.log("hit post", destination);
+            console.log("post destination", destination);
             
             const result = await destCollection.insertOne(destination);
-            console.log(result);
             res.json(result)
         })
 
@@ -93,14 +92,13 @@ async function run() {
         // update orderStatus
         app.put('/orders/:updateId', async (req, res) => {
             const updateId = req.params.updateId;
-            // console.log(updateId)
             const filter = { _id: ObjectId(updateId) };
             
             const options = { upsert: true };
 
             const updateDoc = {
                 $set: {
-                    orderStatus: "confirmed",
+                    orderStatus: "Approved",
                 },
             };
             const result = await orderCollection.updateOne(filter, updateDoc, options)
